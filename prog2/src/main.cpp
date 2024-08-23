@@ -1,3 +1,10 @@
+/**
+ * Projeto 2: STL 2
+ * Lista de prioridades de tarefas
+ * 
+ * @author Jorge Salhani, 8927418
+ */
+
 #include <iostream>
 #include <queue>
 #include <map>
@@ -8,6 +15,9 @@ typedef map<int, filaPriorInt> mapIntFila;
 
 mapIntFila mif;
 
+/**
+ * @param N {int} total de tarefas que podem ser consultadas
+ */
 void mapearTempoFila(int N) {
   for (int i = 0; i < N; i++) {
     string query;
@@ -23,6 +33,9 @@ void mapearTempoFila(int N) {
   }
 }
 
+/**
+ * @param buscas {int} total de buscas desejadas para retorno
+ */
 void obter(int buscas) {
   int t = 1;
   int obtidos = 0;
@@ -49,6 +62,10 @@ void obter(int buscas) {
   }
 }
 
+
+/**
+ * Construir lista de prioridades e executar consultas em sequencia
+ */
 int main() {
 
   int N;
