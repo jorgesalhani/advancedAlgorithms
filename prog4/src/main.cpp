@@ -1,5 +1,5 @@
 /**
- * Projeto 3: Limpeza de Vetor
+ * Projeto 4: Tarefas
  * 
  * 
  * @author Jorge Salhani, 8927418
@@ -25,13 +25,13 @@ typedef struct {
 
 typedef priority_queue<vecInt, vecVecInt, ordemTupla> priorQueVecVecInt;
 
-int contabilizarCustoMaximo(vecVecInt vecEntrada) {
+long int contabilizarCustoMaximo(vecVecInt vecEntrada) {
   priorQueVecVecInt vecTempoOrdem;
 
   for (auto &x : vecEntrada) vecTempoOrdem.push(x);
 
-  int tempoTranscorrido = 0;
-  int custoTotal = 0;
+  long int tempoTranscorrido = 0;
+  long int custoTotal = 0;
 
   int N = vecEntrada.size();
   for (int x = 0; x < N; x++) {
@@ -73,7 +73,7 @@ int main() {
 
   vecVecInt vecEntrada = obterVetorEntrada(N);
 
-  int total = contabilizarCustoMaximo(vecEntrada);
+  long int total = contabilizarCustoMaximo(vecEntrada);
   cout << total;
 
   return 0;
