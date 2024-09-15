@@ -25,16 +25,6 @@ struct {
   }
 } ordemTuplaXY;
 
-struct {
-  bool operator()(vecLonInt itemA, vecLonInt itemB) { 
-    return itemA[1] != itemB[1] 
-      ? itemA[1] > itemB[1]
-      : itemA[0] != itemB[0]
-      ? itemA[0] < itemB[0]
-      : itemA[0] > itemB[0]; 
-  }
-} ordemTuplaYX;
-
 vecVecLonInt obterPontos(int N) {
   vecVecLonInt vetorPontos;
   for (int i = 0; i < N; i++) {
@@ -69,18 +59,20 @@ float obterMenorDistanciaFaixaCentral(vecVecLonInt vetorPontosEsq, vecVecLonInt 
 
   for (long int i = 0; i < tamVetDir; i++) {
     vecLonInt v1 = {vetorPontosDir[i][0], vetorPontosDir[i][1]};
-    // vecLonInt v2 = {vetorPontosDir[i+1][0], vetorPontosDir[i+1][1]};
-
-    // if (abs(v1[0] - v2[0]) > menorDist) break;
     pontosFaixaDoMeio.push_back(v1);
+    if (i+1 >= tamVetDir) break;
+
+    vecLonInt v2 = {vetorPontosDir[i+1][0], vetorPontosDir[i+1][1]};
+
+    if (abs(v1[0] - v2[0]) > menorDist) break;
     // pontosFaixaDoMeio.push_back(v2);
   }
 
   for (long int i = tamVetEsq - 2; i >= 0; i--) {
     vecLonInt v1 = {vetorPontosEsq[i][0], vetorPontosEsq[i][1]};
-    // vecLonInt v2 = {vetorPontosEsq[i+1][0], vetorPontosEsq[i+1][1]};
+    vecLonInt v2 = {vetorPontosEsq[i+1][0], vetorPontosEsq[i+1][1]};
 
-    // if (abs(v1[0] - v2[0]) > menorDist) break;
+    if (abs(v1[0] - v2[0]) > menorDist) break;
     pontosFaixaDoMeio.push_back(v1);
     // pontosFaixaDoMeio.push_back(v2);
   }
@@ -145,7 +137,7 @@ int main() {
 
   float menorDistancia = obterMenorDistancia(vetorPontos);
 
-  cout << menorDistancia;
+  printf("%0.2lf", menorDistancia);
 
   return 0;
 }
