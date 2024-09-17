@@ -10,37 +10,78 @@
 #include <numeric>
 
 using namespace std;
-typedef vector<int> vecInt;
+typedef vector<long int> vecLongInt;
 
-vecInt obterPaginasPorLivro(int nLivros) {
-  vecInt pgsPorLivro;
+vecLongInt cumulativoCresc;
+vecLongInt cumulativoDecresc;
 
-  for (int i = 0; i < nLivros; i++) {
-    int pgs;
+vecLongInt obterPaginasPorLivro(long int nLivros) {
+  vecLongInt pgsPorLivro;
+
+  for (long int i = 0; i < nLivros; i++) {
+    long int pgs;
     cin >> pgs;
     pgsPorLivro.push_back(pgs);
   }
 
+  sort(pgsPorLivro.begin(), pgsPorLivro.end(), [](long int a, long int b) { return a < b; });
+
+  long int cumCresc = 0;
+  long int cumDecresc = 0;
+
+  long int j = nLivros - 1;
+
+  for (long int i = 0; i < nLivros; i++) {
+    cumCresc += pgsPorLivro[i];
+    cumDecresc += pgsPorLivro[j];
+
+    cumulativoCresc.push_back(cumCresc);
+    cumulativoDecresc.push_back(cumDecresc);
+    j--;
+  }
+
+  for (auto &x : cumulativoCresc) cout << x << " ";
+  cout << endl;
+
+  for (auto &x : cumulativoDecresc) cout << x << " ";
+  cout << endl;
+
   return pgsPorLivro;
+}
+
+
+long int obterDivisaoBalanceada(vecLongInt pgsPorLivro) {
+  long int meio = (long int) (pgsPorLivro.size() / 2);
+
+  if (meio == 0) {
+    return 0;
+  }
+
+  vecLongInt pgsPorLivroCrescEsq = vecLongInt(pgsPorLivro.begin(), pgsPorLivro.end() - meio);
+  obterDivisaoBalanceada(pgsPorLivroCrescEsq);
+
+  long int totalPgsPorLivroEsq = reduce(pgsPorLivroCrescEsq.begin(), pgsPorLivroCrescEsq.end(), 0);
+
+  vecLongInt pgsPorLivroDir = vecLongInt(pgsPorLivro.begin() + meio, pgsPorLivro.end());
+  obterDivisaoBalanceada(pgsPorLivroDir);
+
+  long int totalPgsPorLivroDir = reduce(pgsPorLivroDir.begin(), pgsPorLivroDir.end(), 0);
+
+  long int menorDosMaiores = totalPgsPorLivroEsq < totalPgsPorLivroDir ? totalPgsPorLivroEsq : totalPgsPorLivroDir;
+
+  return menorDosMaiores;
 }
 
 int main() {
 
-  int nLivros, mPessoas;
+  long int nLivros, mPessoas;
   cin >> nLivros;
   cin >> mPessoas;
 
-  vecInt pgsPorLivro = obterPaginasPorLivro(nLivros);
-  sort(pgsPorLivro.begin(), pgsPorLivro.end(), [](int a, int b) { return b < a; });
+  vecLongInt pgsPorLivro = obterPaginasPorLivro(nLivros);
+  long int totalBalanceado = obterDivisaoBalanceada(pgsPorLivro);
 
-  vecInt menoresPgs = vecInt(pgsPorLivro.begin() + mPessoas - 1, pgsPorLivro.end());
-
-  long int somaMenores = reduce(menoresPgs.begin(), menoresPgs.end(), 0);
-  long int maxDentreAlocacoes = somaMenores > pgsPorLivro[0] ? somaMenores : pgsPorLivro[0];
-
-  // cout << maxDentreAlocacoes;
-  for (auto &x : menoresPgs) cout << x << " ";
-  cout << endl;
+  cout << totalBalanceado << endl;
 
   return 0;
 }

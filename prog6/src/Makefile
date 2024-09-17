@@ -4,4 +4,4 @@ main:
 	g++ -o exec main.cpp -Wall;
 
 run:
-	./exec < ../testCases/3.in
+	./exec < ../testCases/1.in
