@@ -9,6 +9,7 @@
 #include <fstream> 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -57,62 +58,11 @@ array2d construirLabirinto(int M, int N) {
   return labirinto;
 }
 
-bool encontrarSaida(array2d &labirinto, vecInt coordAtual, int &contadorPassos, int ordem);
-
-void caminharParaCoordenada(array2d &labirinto, vecInt proxCoord, bool proxLivre, int &contadorPassos, int ordem) {
-  labirinto[proxCoord[0]][proxCoord[1]] = 1;
-  if (proxLivre) encontrarSaida(labirinto, {proxCoord[0], proxCoord[1]}, ++contadorPassos, ordem);
-}
-
-void caminharPorOrdem(array2d &labirinto, vecInt proxCoord, int &contadorPassos, int ordem) {
-  vecInt baiCoordProx = {proxCoord[0] + 1, proxCoord[1]};
-  vecInt dirCoordProx = {proxCoord[0], proxCoord[1] + 1};
-  vecInt cimCoordProx = {proxCoord[0] - 1, proxCoord[1]};
-  vecInt esqCoordProx = {proxCoord[0], proxCoord[1] - 1};
-
-  bool baiLivre = labirinto[baiCoordProx[0]][baiCoordProx[1]] != 1;
-  bool dirLivre = labirinto[dirCoordProx[0]][dirCoordProx[1]] != 1;
-  bool cimLivre = labirinto[cimCoordProx[0]][cimCoordProx[1]] != 1;
-  bool esqLivre = labirinto[esqCoordProx[0]][esqCoordProx[1]] != 1;
-  
-  switch (ordem) {
-    case 0:
-        caminharParaCoordenada(labirinto, baiCoordProx, baiLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, dirCoordProx, dirLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, cimCoordProx, cimLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, esqCoordProx, esqLivre, contadorPassos, ordem);
-      break;
-
-    case 1:
-        caminharParaCoordenada(labirinto, baiCoordProx, baiLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, esqCoordProx, esqLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, cimCoordProx, cimLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, dirCoordProx, dirLivre, contadorPassos, ordem);
-      break;
-
-    case 2:
-        caminharParaCoordenada(labirinto, cimCoordProx, cimLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, dirCoordProx, dirLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, baiCoordProx, baiLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, esqCoordProx, esqLivre, contadorPassos, ordem);
-      break;
-
-    case 3:
-        caminharParaCoordenada(labirinto, cimCoordProx, cimLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, esqCoordProx, esqLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, baiCoordProx, baiLivre, contadorPassos, ordem);
-        caminharParaCoordenada(labirinto, dirCoordProx, dirLivre, contadorPassos, ordem);
-      break;
-    
-    default:
-      break;
-  }
-}
-
 int totalCaminhos = 0;
 vecInt distancias;
 
-bool encontrarSaida(array2d &labirinto, vecInt coordAtual, int &contadorPassos, int ordem) {
+bool encontrarSaida(array2d &labirinto, vecInt coordAtual, int &contadorPassos) {
+
   int M = labirinto.size();
   int N = labirinto[0].size();
 
@@ -120,14 +70,51 @@ bool encontrarSaida(array2d &labirinto, vecInt coordAtual, int &contadorPassos, 
 
   if (coordAtual[0] == saida[0] && coordAtual[1] == saida[1]) {
     totalCaminhos++;
+    // cout << "AQUI!!" << endl;
     distancias.push_back(contadorPassos);
+    --contadorPassos;
     return true;
   }
 
   // imprimirLabirinto(labirinto);
   // cout << contadorPassos << endl;
 
-  caminharPorOrdem(labirinto, coordAtual, contadorPassos, ordem);
+  vecInt baiCoordProx = {coordAtual[0] + 1, coordAtual[1]};
+  vecInt dirCoordProx = {coordAtual[0], coordAtual[1] + 1};
+  vecInt cimCoordProx = {coordAtual[0] - 1, coordAtual[1]};
+  vecInt esqCoordProx = {coordAtual[0], coordAtual[1] - 1};
+
+  bool baiLivre = labirinto[baiCoordProx[0]][baiCoordProx[1]] != 1;
+  bool dirLivre = labirinto[dirCoordProx[0]][dirCoordProx[1]] != 1;
+  bool cimLivre = labirinto[cimCoordProx[0]][cimCoordProx[1]] != 1;
+  bool esqLivre = labirinto[esqCoordProx[0]][esqCoordProx[1]] != 1;
+
+  if (!baiLivre && !dirLivre && !cimLivre && !esqLivre) {
+    --contadorPassos;
+    labirinto[coordAtual[0]][coordAtual[1]] = 0;
+    return false;
+  }
+
+  labirinto[coordAtual[0]][coordAtual[1]] = 1;
+
+  // cout << "(" << coordAtual[0] << "," << coordAtual[1] << ")" << " -> ";
+  // cout << baiLivre << dirLivre << cimLivre << esqLivre << endl;
+
+  if (baiLivre) {
+    encontrarSaida(labirinto, baiCoordProx, ++contadorPassos);
+  }
+  if (dirLivre) {
+    encontrarSaida(labirinto, dirCoordProx, ++contadorPassos);
+  }
+  if (cimLivre) {
+    encontrarSaida(labirinto, cimCoordProx, ++contadorPassos);
+  }
+  if (esqLivre) {
+    encontrarSaida(labirinto, esqCoordProx, ++contadorPassos);
+  }
+
+  --contadorPassos;
+  labirinto[coordAtual[0]][coordAtual[1]] = 0;
   
   return false;
 }
@@ -137,16 +124,11 @@ int main(void) {
   cin >> M;
   cin >> N;
 
-
-  for (int i = 0; i < 4; i++) {
-    int contPassos = 0;
-    array2d labirinto = construirLabirinto(M, N);
-    encontrarSaida(labirinto, {1,1}, contPassos, i);  
-    for (auto &x : distancias) cout << x << ", ";
-    cout << endl;
-  }
-
-  // imprimirLabirinto(labirinto);
+  int contPassos = 0;
+  array2d labirinto = construirLabirinto(M, N);
+  encontrarSaida(labirinto, {1,1}, contPassos);  
+  sort(distancias.begin(), distancias.end());
+  cout << totalCaminhos << " " << distancias[0] << endl;
   
   return 0;
 }
