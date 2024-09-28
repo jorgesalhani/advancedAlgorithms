@@ -103,6 +103,14 @@
     "streambuf": "cpp",
     "typeinfo": "cpp",
     "chrono": "cpp",
-    "ranges": "cpp"
+    "ranges": "cpp",
+    "bitset": "cpp",
+    "cstring": "cpp",
+    "ctime": "cpp",
+    "optional": "cpp",
+    "ratio": "cpp",
+    "fstream": "cpp",
+    "iomanip": "cpp",
+    "sstream": "cpp"
   }
 }

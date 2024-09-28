@@ -1,7 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <cstdio>
-#include <unordered_map>
 
 using namespace std;
 
@@ -22,21 +20,20 @@ vecLongInt obterEntradas(long int N) {
   return custos;
 }
 
-long int calcularMenorCusto(vecLongInt custos, long int i) {
+long int calcularMenorCusto(vecLongInt *endCustos, long int i) {
+  vecLongInt custos = *endCustos;
 
   if (memo[i] != -1) return memo[i];
 
   if (i == 0) return memo[i] = 0;
   long int ci1 = abs(custos[i-1] - custos[i]);
   if (i == 1) 
-    return memo[i] = abs(custos[i-1] - custos[i]);
+    return memo[i] = ci1;
   
   long int ci2 = abs(custos[i-2] - custos[i]);
-
-  memo[i] = min(ci2 + calcularMenorCusto(custos, i-2), ci1 + calcularMenorCusto(custos, i-1));
+  memo[i] = min(ci2 + calcularMenorCusto(endCustos, i-2), ci1 + calcularMenorCusto(endCustos, i-1));
   return memo[i];
 }
-
 
 int main(void) {
 
@@ -44,7 +41,11 @@ int main(void) {
   cin >> N;
 
   vecLongInt custos = obterEntradas(N);
-  cout << calcularMenorCusto(custos, N-1) << endl;
+  // for (auto &x : memo) cout << x << " ";
+  // cout << endl;
+  cout << calcularMenorCusto(&custos, N-1) << endl;
+  // for (auto &x : memo) cout << x << " ";
+  // cout << endl;
 
   return 0;
 }
