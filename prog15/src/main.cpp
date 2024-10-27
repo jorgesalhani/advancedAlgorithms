@@ -2,7 +2,7 @@
 #include <vector>
 #include <bitset>
 #include <algorithm>
-#define N_MAX_PRIMOS 50
+#define N_MAX_PRIMOS 10000000
 
 using namespace std;
 
